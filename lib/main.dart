@@ -38,7 +38,17 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Atrações'),
+        title: Text(
+          'Atrações',
+          style: TextStyle(color: Color.fromARGB(255, 250, 250, 250)),
+        ),
+        backgroundColor: Color.fromARGB(219, 0, 0, 0),
+        actions: [
+          Image.asset(
+            'assets/images/logo.png',
+            height: 70,
+          )
+        ],
       ),
       body: ListView.builder(
         itemCount: listaAtracoes.length,
