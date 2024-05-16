@@ -97,6 +97,8 @@ class _HomePageState extends State<HomePage> {
         },
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor:  Color.fromARGB(219, 0, 0, 0),
+        unselectedItemColor: Colors.white, // Define a cor dos ícones não selecionados
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.login),
