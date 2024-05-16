@@ -16,18 +16,6 @@ class _HomePageState extends State<HomePage> {
   List<Atracao> _listaFavoritos = [];
   int _selectedIndex = 0;
 
-  static List<Widget> _widgetOptions = <Widget>[
-    LoginPage(), // Página de Login
-    ChatPage(), // Página de Chat
-    AboutPage(), // Página "Sobre"
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,51 +35,21 @@ class _HomePageState extends State<HomePage> {
           )
         ],
       ),
-      body: ListView.builder(
-        itemCount: listaAtracoes.length,
-        itemBuilder: (context, index) {
-          final isFavorito = _listaFavoritos.contains(listaAtracoes[index]);
-          return ListTile(
-            title: Text(listaAtracoes[index].nome),
-            subtitle: Wrap(
-              spacing: 8,
-              runSpacing: 4,
-              children: listaAtracoes[index]
-                  .tags
-                  .map((tag) => Chip(label: Text('#$tag')))
-                  .toList(),
-            ),
-            leading: CircleAvatar(
-              child: Text('${listaAtracoes[index].nome[0]}'),
-            ),
-            trailing: IconButton(
-              onPressed: () {
-                setState(() {
-                  if (isFavorito) {
-                    _listaFavoritos.remove(listaAtracoes[index]);
-                  } else {
-                    _listaFavoritos.add(listaAtracoes[index]);
-                  }
-                });
-              },
-              icon: Icon(
-                isFavorito ? Icons.favorite : Icons.favorite_border,
-                color: isFavorito ? Colors.red : null,
-              ),
-            ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AtracaoPage(atracao: listaAtracoes[index]),
-                ),
-              );
-            },
-          );
-        },
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: [
+          _buildListView(),
+          LoginPage(), // Página de Login
+          ChatPage(),   // Página de Chat
+          AboutPage(), // Página "Sobre"
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.login),
             label: 'Login',
@@ -100,15 +58,63 @@ class _HomePageState extends State<HomePage> {
             icon: Icon(Icons.chat),
             label: 'Chat',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.info),
-            label: 'Sobre',
-          ),
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.blue,
         onTap: _onItemTapped,
       ),
     );
+  }
+
+  Widget _buildListView() {
+    return ListView.builder(
+      itemCount: listaAtracoes.length,
+      itemBuilder: (context, index) {
+        final isFavorito = _listaFavoritos.contains(listaAtracoes[index]);
+        return ListTile(
+          title: Text(listaAtracoes[index].nome),
+          subtitle: Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            children: listaAtracoes[index]
+                .tags
+                .map((tag) => Chip(label: Text('#$tag')))
+                .toList(),
+          ),
+          leading: CircleAvatar(
+            child: Text('${listaAtracoes[index].nome[0]}'),
+          ),
+          trailing: IconButton(
+            onPressed: () {
+              setState(() {
+                if (isFavorito) {
+                  _listaFavoritos.remove(listaAtracoes[index]);
+                } else {
+                  _listaFavoritos.add(listaAtracoes[index]);
+                }
+              });
+            },
+            icon: Icon(
+              isFavorito ? Icons.favorite : Icons.favorite_border,
+              color: isFavorito ? Colors.red : null,
+            ),
+          ),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => AtracaoPage(atracao: listaAtracoes[index]),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 }
