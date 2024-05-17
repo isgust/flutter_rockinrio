@@ -1,85 +1,137 @@
 import 'package:flutter/material.dart';
 
-class ChatPage extends StatelessWidget {
+class ChatPage extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xFF000000),
-        title: Text(
-          'Fale conosco',
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-      body: ChatScreen(),
-    );
-  }
+  _ChatPageState createState() => _ChatPageState();
 }
 
-class ChatScreen extends StatefulWidget {
-  @override
-  _ChatScreenState createState() => _ChatScreenState();
-}
-
-class _ChatScreenState extends State<ChatScreen> {
-  final TextEditingController _textController = TextEditingController();
+class _ChatPageState extends State<ChatPage> {
   final List<String> _messages = [];
+  final TextEditingController _controller = TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Expanded(
-          child: ListView.builder(
-            padding: EdgeInsets.all(8.0),
-            reverse: true,
-            itemCount: _messages.length,
-            itemBuilder: (_, int index) => ListTile(
-              leading: CircleAvatar(child: Icon(Icons.person)),
-              title: Text(_messages[index]),
-            ),
-          ),
-        ),
-        Divider(height: 1.0),
-        _buildTextComposer(),
-      ],
-    );
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
-  Widget _buildTextComposer() {
+  void _sendMessage() {
+    if (_controller.text.isNotEmpty) {
+      setState(() {
+        _messages.add(_controller.text);
+        _controller.clear();
+      });
+    }
+  }
+
+  Widget _buildMessage(String message, bool isMe) {
+    final Alignment = isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start;
+    final borderRadius = isMe
+      ? BorderRadius.only(
+          topLeft: Radius.circular(12),
+          bottomLeft: Radius.circular(12),
+          bottomRight: Radius.circular(12),
+        )
+      : BorderRadius.only(
+          topLeft: Radius.circular(12),
+          bottomLeft: Radius.circular(12),
+          bottomRight: Radius.circular(12),
+        );
+    
+    
     return Container(
-      margin: EdgeInsets.all(8.0),
+      margin: const EdgeInsets.symmetric(vertical: 10.0),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Flexible(
-            child: TextField(
-              controller: _textController,
-              decoration: InputDecoration.collapsed(
-                hintText: 'Enviar mensagem',
-              ),
-            ),
+          Container(
+            margin: const EdgeInsets.only(right: 16.0),
+            child: CircleAvatar(child: Text('A')),
           ),
-          IconButton(
-            icon: Icon(Icons.send),
-            onPressed: () => _handleSubmit(_textController.text),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text('User', style: Theme.of(context).textTheme.subtitle1),
+              Container(
+                margin: const EdgeInsets.only(top: 5.0),
+                child: Text(message),
+              ),
+            ],
           ),
         ],
       ),
     );
   }
 
-  void _handleSubmit(String text) {
-    if (text.isNotEmpty) {
-      setState(() {
-        _messages.insert(0, text);
-      });
-      _textController.clear();
-    }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Chat'),
+      ),
+      body: Column(
+        children: <Widget>[
+          Flexible(
+            child: Stack(
+              children: <Widget>[
+                Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/backgroundChat.jpg'), 
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                ListView.builder(
+                  padding: const EdgeInsets.all(8.0),
+                  reverse: true,
+                  itemBuilder: (_, int index) => _buildMessage(
+                    _messages[index],
+                    index % 2 == 0,
+                    ),
+                  itemCount: _messages.length,
+                ),
+              ],
+            ),
+          ),
+          Divider(height: 1.0),
+          Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).cardColor,
+            ),
+            child: _buildTextComposer(),
+          ),
+        ],
+      ),
+    );
   }
-}
 
-void main() {
-  runApp(MaterialApp(
-    home: ChatPage(),
-  ));
+  Widget _buildTextComposer() {
+    return IconTheme(
+      data: IconThemeData(color: Theme.of(context).colorScheme.secondary),
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Row(
+          children: <Widget>[
+            Flexible(
+              child: TextField(
+                controller: _controller,
+                onSubmitted: (text) => _sendMessage(),
+                decoration: InputDecoration.collapsed(
+                  hintText: 'Send a message',
+                ),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 4.0),
+              child: IconButton(
+                icon: Icon(Icons.send),
+                onPressed: _sendMessage,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
