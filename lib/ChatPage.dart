@@ -43,21 +43,18 @@ class _ChatPageState extends State<ChatPage> {
       margin: const EdgeInsets.symmetric(vertical: 10.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: isMe ? MainAxisAlignment.end: MainAxisAlignment.start,
         children: <Widget>[
+        if(!isMe)
           Container(
             margin: const EdgeInsets.only(right: 16.0),
             child: CircleAvatar(child: Text('A')),
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text('User', style: Theme.of(context).textTheme.subtitle1),
-              Container(
-                margin: const EdgeInsets.only(top: 5.0),
-                child: Text(message),
-              ),
-            ],
-          ),
+        Container(
+          padding: const EdgeInsets.all(10.0),
+          constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width*0.75),
+          decoration: ,
+        ),
         ],
       ),
     );
