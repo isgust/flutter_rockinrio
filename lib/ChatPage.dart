@@ -25,40 +25,49 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Widget _buildMessage(String message, bool isMe) {
-    final Alignment = isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start;
-    final borderRadius = isMe
+  final alignment = isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start;
+  final borderRadius = isMe
       ? BorderRadius.only(
           topLeft: Radius.circular(12),
           bottomLeft: Radius.circular(12),
           bottomRight: Radius.circular(12),
         )
       : BorderRadius.only(
-          topLeft: Radius.circular(12),
+          topRight: Radius.circular(12),
           bottomLeft: Radius.circular(12),
           bottomRight: Radius.circular(12),
         );
-    
-    
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: isMe ? MainAxisAlignment.end: MainAxisAlignment.start,
-        children: <Widget>[
-        if(!isMe)
+
+  return Container(
+    margin: const EdgeInsets.symmetric(vertical: 10.0),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+      children: <Widget>[
+        if (!isMe)
           Container(
             margin: const EdgeInsets.only(right: 16.0),
             child: CircleAvatar(child: Text('A')),
           ),
-        Container(
-          padding: const EdgeInsets.all(10.0),
-          constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width*0.75),
-          decoration: ,
+        Flexible(
+          child: Container(
+            padding: const EdgeInsets.all(10.0),
+            constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
+            decoration: BoxDecoration(
+              color: isMe ? Colors.blueGrey[100] : Color.fromARGB(255, 100, 141, 230),
+              borderRadius: borderRadius,
+            ),
+            child: Text(
+              message,
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
         ),
-        ],
-      ),
-    );
-  }
+      ],
+    ),
+  );
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +90,7 @@ class _ChatPageState extends State<ChatPage> {
                 ),
                 ListView.builder(
                   padding: const EdgeInsets.all(8.0),
-                  reverse: true,
+                  reverse: false,
                   itemBuilder: (_, int index) => _buildMessage(
                     _messages[index],
                     index % 2 == 0,
