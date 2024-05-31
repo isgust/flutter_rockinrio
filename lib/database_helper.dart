@@ -37,7 +37,8 @@ class DatabaseHelper {
 
   Future<Map<String, dynamic>?> authenticateUser(String email, String password) async {
     final db = await database;
-    var res = await db.query('users', where: 'email = ? AND password = ?', whereArgs: [email, password]);
+    var res = await db.query('users', where: 'email = ? AND password = ?', 
+    whereArgs: [email, password]);
     if (res.isNotEmpty) {
       return res.first;
     }
